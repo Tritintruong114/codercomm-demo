@@ -56,6 +56,7 @@ const LoginPage = () => {
         navigate(from, { replace: true });
       });
     } catch (error) {
+      console.log(error);
       reset();
       setError("responseError", error);
     }
@@ -65,7 +66,7 @@ const LoginPage = () => {
     <Container>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {error.responseError && (
+          {error && (
             <Alert severity="error">{error.responseError.message}</Alert>
           )}
           <Alert severity="info">
