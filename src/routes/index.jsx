@@ -8,11 +8,19 @@ import BlankLayout from "../layouts/BlankLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import NotFoundPage from "../pages/UserProfilePage copy";
+import AuthRequire from "./AuthRequire";
 
 const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout />}>
+      <Route
+        path="/"
+        element={
+          <AuthRequire>
+            <MainLayout />
+          </AuthRequire>
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />

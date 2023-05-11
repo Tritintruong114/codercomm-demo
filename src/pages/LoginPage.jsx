@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { FCheckBox, FormProvider, FTextField } from "../components/form";
+
+import { FCheckbox, FormProvider, FTextField } from "../components/form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+
 import { useLocation, useNavigate, Link as RouterLink } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+//
 import {
   Alert,
   Container,
@@ -16,6 +19,8 @@ import {
 import { Visibility } from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { LoadingButton } from "@mui/lab";
+//
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid Email").required("Email is required"),
   password: Yup.string().required("Password is required"),
@@ -40,7 +45,7 @@ const LoginPage = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { error, isSubmitting },
+    formState: { errors, isSubmitting },
   } = methods;
   //
   const navigate = useNavigate();
@@ -63,11 +68,11 @@ const LoginPage = () => {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xs">
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {error && (
-            <Alert severity="error">{error.responseError.message}</Alert>
+          {!!errors.responseError && (
+            <Alert severity="error">{errors.responseError.message}</Alert>
           )}
           <Alert severity="info">
             Don't have an account?
@@ -94,8 +99,30 @@ const LoginPage = () => {
                 </InputAdornment>
               ),
             }}
-          ></FTextField>
+          />
         </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ my: 2 }}
+        >
+          <FCheckbox name="remember" label="Remember me" />
+          <Link component={RouterLink} variant="subtitle2" to="/">
+            Forgot Password
+          </Link>
+        </Stack>
+
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="container"
+          loading={isSubmitting}
+          className="bg-black"
+        >
+          Login
+        </LoadingButton>
       </FormProvider>
     </Container>
   );
