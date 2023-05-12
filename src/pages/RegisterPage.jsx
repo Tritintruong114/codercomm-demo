@@ -23,7 +23,7 @@ const RegisterSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
   passwordConfirmation: Yup.string()
     .required("Please confirm your password")
-    .oneOf([Yup.ref("Password")], "Passwords must match"),
+    .oneOf([Yup.ref("password")], "Passwords must match"),
 });
 
 const defaultValues = {
@@ -83,6 +83,7 @@ const RegisterPage = () => {
           </Alert>
           <FTextField name="name" label="Full name" />
           <FTextField name="email" label="Email Address" />
+
           <FTextField
             name="password"
             label="Password"
@@ -100,8 +101,9 @@ const RegisterPage = () => {
               ),
             }}
           />
+
           <FTextField
-            name="passwordconfirmation"
+            name="passwordConfirmation"
             label="Password Confirmation"
             type={showPasswordConfirmation ? "text" : "password"}
             InputProps={{

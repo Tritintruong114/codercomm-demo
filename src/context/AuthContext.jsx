@@ -68,7 +68,8 @@ const AuthProvider = ({ children }) => {
   };
 
   const register = async ({ name, email, password }, callback) => {
-    const response = await apiService.post("/user", {
+    console.log("This is abc");
+    const response = await apiService.post("/users", {
       name,
       email,
       password,
