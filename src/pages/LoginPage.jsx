@@ -16,7 +16,6 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import { Visibility } from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { LoadingButton } from "@mui/lab";
@@ -117,9 +116,8 @@ const LoginPage = () => {
           fullWidth
           size="large"
           type="submit"
-          variant="container"
+          variant="contained"
           loading={isSubmitting}
-          className="bg-black"
         >
           Login
         </LoadingButton>

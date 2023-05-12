@@ -5,11 +5,11 @@ const apiService = axios.create({ baseURL: BASE_URL });
 
 apiService.interceptors.request.use(
   (request) => {
-    console.log("Start Request", request);
+    // console.log("Start Request", request);
     return request;
   },
   function (error) {
-    console.log("Request Error", { error });
+    // console.log("Request Error", { error });
     return Promise.reject(error);
   }
 );
@@ -20,7 +20,7 @@ apiService.interceptors.response.use(
     return response.data;
   },
   function (error) {
-    console.log("Response Error", { error });
+    // console.log("Response Error", { error });
     return Promise.reject(error);
   }
 );

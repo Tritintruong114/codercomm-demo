@@ -1,10 +1,21 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { FormProvider, FTextField } from "react-hook-form";
+import { FormProvider, FTextField } from "../components/form";
 import { useForm } from "react-hook-form";
-import { yupResolver, YupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Container,
+  Stack,
+  Link,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { LoadingButton } from "@mui/lab";
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -35,7 +46,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const {
-    handleSubmid,
+    handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
@@ -43,6 +54,7 @@ const RegisterPage = () => {
 
   const onSubmit = async (data) => {
     const { name, email, password } = data;
+    console.log("This is onsubmit");
     try {
       await auth.register({ name, email, password }, () => {
         navigate("/", { replace: true });
@@ -54,9 +66,72 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
-      <h1>Register Page</h1>
-    </div>
+    <Container maxWidth="xs">
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          {!!errors.responseError && (
+            <Alert severity="error">{errors.responseError.message}</Alert>
+          )}
+          <Alert severity="info">
+            Already have an account?
+            <Link variant="subtitle2" component={RouterLink} to="/login">
+              Sign in
+            </Link>
+          </Alert>
+          <FTextField name="name" label="Full name" />
+          <FTextField name="email" label="Email Address" />
+          <FTextField
+            name="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FTextField
+            name="passwordconfirmation"
+            label="Password Confirmation"
+            type={showPasswordConfirmation ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() =>
+                      setShowPasswordConfirmation(!showPasswordConfirmation)
+                    }
+                    edge="end"
+                  >
+                    {showPasswordConfirmation ? (
+                      <VisibilityIcon />
+                    ) : (
+                      <VisibilityOffIcon />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <LoadingButton
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+          >
+            Register
+          </LoadingButton>
+        </Stack>
+      </FormProvider>
+    </Container>
   );
 };
 
