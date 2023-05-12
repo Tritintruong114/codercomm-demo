@@ -55,6 +55,7 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     const from = location.state?.from?.pathname || "/";
     let { email, password } = data;
+    console.log("This is onSubmit Loginpage");
     try {
       await auth.login({ email, password }, () => {
         navigate(from, { replace: true });
@@ -74,9 +75,9 @@ const LoginPage = () => {
             <Alert severity="error">{errors.responseError.message}</Alert>
           )}
           <Alert severity="info">
-            Don't have an account?
-            <Link variant="subtitle2" components={RouterLink} to="/register">
-              Get Started
+            Don't have an account
+            <Link variant="subtitle2" component={RouterLink} to="/register">
+              Register
             </Link>
           </Alert>
 

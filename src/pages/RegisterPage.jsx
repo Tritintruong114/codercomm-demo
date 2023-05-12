@@ -35,8 +35,9 @@ const defaultValues = {
 
 const RegisterPage = () => {
   const auth = useAuth();
-  const [showPassword, setShowPassword] = useState();
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -54,7 +55,9 @@ const RegisterPage = () => {
 
   const onSubmit = async (data) => {
     const { name, email, password } = data;
+    //
     console.log("This is onsubmit");
+    //
     try {
       await auth.register({ name, email, password }, () => {
         navigate("/", { replace: true });
@@ -120,6 +123,7 @@ const RegisterPage = () => {
               ),
             }}
           />
+
           <LoadingButton
             fullWidth
             size="large"
