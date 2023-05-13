@@ -13,10 +13,10 @@ const AuthContext = createContext({ ...initialState });
 
 const setSession = (accessToken) => {
   if (accessToken) {
-    window.localStorage.setItem("access Token", accessToken);
+    window.localStorage.setItem("accessToken", accessToken);
     apiService.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
-    window.localStorage.removeItem("access token");
+    window.localStorage.removeItem("accesstoken");
     delete apiService.defaults.headers.common.Authorization;
   }
 };
@@ -29,6 +29,14 @@ const UPDATE_PROFILE = "AUTH.UPDATE_PROFILE";
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case INITIALIZE:
+      const { isAuthenicated, user } = action.payload;
+      return {
+        ...state,
+        isInitialized: true,
+        isAuthenicated,
+        user,
+      };
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -54,6 +62,40 @@ const reducer = (state, action) => {
 
 const AuthProvider = ({ children }) => {
   const [state, dispacth] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("accessToken");
+
+        if (accessToken && isValidToken(accessToken)) {
+          setSession(accessToken);
+          console.log(accessToken);
+          const response = await apiService.get("/users/me");
+          const user = response.data;
+          console.log(user);
+
+          dispacth({
+            type: INITIALIZE,
+            payload: { isAuthenicated: true, user },
+          });
+        } else {
+          setSession(null);
+          dispacth({
+            type: INITIALIZE,
+            payload: { isAuthenicated: false, user: null },
+          });
+        }
+      } catch (error) {
+        setSession(null);
+        dispacth({
+          type: INITIALIZE,
+          payload: { isAuthenicated: false, user: null },
+        });
+      }
+    };
+    initialize();
+  }, []);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });
