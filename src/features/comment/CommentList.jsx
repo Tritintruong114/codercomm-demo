@@ -3,6 +3,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getComments } from "./commentSlice";
 import { COMMENTS_PER_POST } from "../../app/config";
 import { Pagination, Stack, Typography } from "@mui/material";
+import CommentCard from "./CommentCard";
+import LoadingScreen from "../../components/LoadingScreen";
 const CommentList = ({ postId }) => {
   const {
     commentsByPost,
@@ -27,6 +29,23 @@ const CommentList = ({ postId }) => {
     if (postId) dispatch(getComments({ postId }));
   }, [postId, dispatch]);
 
+  let renderComments;
+
+  if (commentsByPost) {
+    const comments = commentsByPost.map(
+      (commentsId) => commentsById[commentsId]
+    );
+    renderComments = (
+      <Stack spacing={1.5}>
+        {comments.map((comment) => (
+          <CommentCard key={comment._id} comment={comment} />
+        ))}
+      </Stack>
+    );
+  } else if (isLoading) {
+    renderComments = <LoadingScreen />;
+  }
+
   return (
     <Stack spacing={1.5}>
       <Stack direction="row" justifyContent="space-between">
@@ -45,6 +64,7 @@ const CommentList = ({ postId }) => {
           />
         )}
       </Stack>
+      {renderComments}
     </Stack>
   );
 };
