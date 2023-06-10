@@ -39,6 +39,11 @@ const slice = createSlice({
       });
       state.totalPosts = count;
     },
+    sendPostReactionSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      console.log(action.payload);
+    },
   },
 });
 export const getPosts =
@@ -74,4 +79,24 @@ export const createPost =
     }
   };
 
+export const sendPostReaction =
+  ({ postId, emoji }) =>
+  async (dispactch) => {
+    dispactch(slice.actions.startLoading());
+    try {
+      const response = await apiService.post(`/reactions`, {
+        targetType: "Post",
+        targetId: postId,
+        emoji,
+      });
+      dispactch(
+        slice.actions.sendPostReactionSuccess({
+          postId,
+          reactions: response.data,
+        })
+      );
+    } catch (error) {
+      dispactch(slice.actions.hasError(error.message));
+    }
+  };
 export default slice.reducer;
